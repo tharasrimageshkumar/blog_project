@@ -1,0 +1,13 @@
+<h1>Create Blog Post</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    
+    <label>Title:</label><br>
+    <input type="text" name="title"><br><br>
+
+    <label>Content:</label><br>
+    <textarea name="content"></textarea><br><br>
+
+    <button type="submit">Submit</button>
+</form>
