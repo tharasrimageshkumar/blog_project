@@ -4,9 +4,18 @@ from .models import Post
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+
 def home(request):
-    posts = Post.objects.all()
-    return render(request, "index.html", {"posts": posts})
+    all_posts = Post.objects.all().order_by('-id')
+
+    my_posts = None
+    if request.user.is_authenticated:
+        my_posts = Post.objects.filter(author=request.user).order_by('-id')
+
+    return render(request, 'index.html', {
+        'all_posts': all_posts,
+        'my_posts': my_posts
+    })
 
 @login_required
 def create_post(request):

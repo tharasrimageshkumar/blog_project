@@ -2,95 +2,63 @@
 <html>
 <head>
     <title>Blog Corner</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .navbar {
-            background-color: #333;
-            color: white;
-            padding: 15px;
-        }
-
-        .navbar a {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-
-        .container {
-            width: 60%;
-            margin: auto;
-            margin-top: 20px;
-        }
-
-        .post {
-            background: white;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 5px gray;
-        }
-
-        .post h2 {
-            margin: 0;
-        }
-
-        .post p {
-            margin: 10px 0;
-        }
-
-        .actions a {
-            margin-right: 10px;
-            color: blue;
-        }
-    </style>
 </head>
-
 <body>
 
-<div class="navbar">
+    <h1>Blog Corner</h1>
+
+    <!-- 🔐 NAVBAR -->
     {% if user.is_authenticated %}
-    Welcome {{ user.username }}
+        <p>
+            Welcome {{ user.username }} |
+            <a href="/logout/">Logout</a> |
+            <a href="/create/">Create Post</a>
 
-    <a href="/logout/">Logout</a>
-    <a href="/create/">Create</a>
-
-    {% if user.is_staff %}
-        <a href="/admin/">Admin Panel</a>
+            {% if user.is_staff %}
+                | <a href="/admin/">Admin Panel</a>
+            {% endif %}
+        </p>
+    {% else %}
+        <p>
+            <a href="/login/">Login</a> |
+            <a href="/signup/">Signup</a>
+        </p>
     {% endif %}
 
-{% else %}
-    <a href="/login/">Login</a>
-    <a href="/signup/">Signup</a>
-{% endif %}
-</div>
+    <hr>
 
-<div class="container">
-    <h1>My Blog</h1>
+    <!-- 🧑 MY POSTS -->
+    {% if user.is_authenticated %}
+        <h2>My Posts</h2>
 
-    {% for post in posts %}
-        <div class="post">
-            <h2>{{ post.title }}</h2>
-            <p>{{ post.content }}</p>
-            <small>By {{ post.author.username }}</small>
+        {% for post in my_posts %}
+            <div>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+                <small>By {{ post.author }}</small><br>
 
-            <div class="actions">
-                {% if user == post.author %}
-    <a href="/edit/{{ post.id }}/">Edit</a>
-{% endif %}
-
-{% if user == post.author or user.is_staff %}
-    <a href="/delete/{{ post.id }}/">Delete</a>
-{% endif %}
+                <a href="/edit/{{ post.id }}/">Edit</a>
+                <a href="/delete/{{ post.id }}/">Delete</a>
             </div>
+            <hr>
+        {% empty %}
+            <p>You have not created any posts.</p>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 🌍 ALL POSTS -->
+    <h2>All Posts</h2>
+
+    {% for post in all_posts %}
+        <div>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            <small>By {{ post.author }}</small>
         </div>
+        <hr>
+    {% empty %}
+        <p>No posts available.</p>
     {% endfor %}
-</div>
 
 </body>
 </html>
